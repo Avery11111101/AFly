@@ -128,6 +128,9 @@ Everything lives under `/afly` (sub-commands tab-complete):
 
 ## 📝 Changelog
 
+### v1.3.1
+- Added the project GitHub link to `config.yml`.
+
 ### v1.3.0
 - Someone else's residence is now charged at the **wilderness rate** — the cheap rate applies only inside residences you own. Adds dedicated "other residence" notices.
 
