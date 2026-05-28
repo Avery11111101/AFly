@@ -59,7 +59,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 Requires **JDK 21+** and **Maven**.
 
 ```bash
-git clone https://github.com/avery11111102/AFly.git
+git clone https://github.com/Avery11111101/AFly.git
 cd AFly
 mvn clean package
 # Result: target/AFly-<version>.jar
@@ -148,7 +148,7 @@ Everything lives under `/afly` (sub-commands tab-complete):
 
 ## 📄 License
 
-No license has been chosen yet. If you intend to make this public, consider adding one (e.g. [MIT](https://choosealicense.com/licenses/mit/)).
+Released under the [MIT License](LICENSE). © 2026 Avery11111101.
 
 ---
 

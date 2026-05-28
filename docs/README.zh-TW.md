@@ -59,7 +59,7 @@
 需要 **JDK 21+** 與 **Maven**。
 
 ```bash
-git clone https://github.com/avery11111102/AFly.git
+git clone https://github.com/Avery11111101/AFly.git
 cd AFly
 mvn clean package
 # 成品：target/AFly-<版本>.jar
@@ -148,7 +148,7 @@ actionbar-show-balance: true
 
 ## 📄 授權
 
-尚未選擇授權條款。若要公開，建議加上一個（例如 [MIT](https://choosealicense.com/licenses/mit/)）。
+以 [MIT 授權](../LICENSE) 釋出。© 2026 Avery11111101。
 
 ---
 
