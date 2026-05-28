@@ -17,8 +17,8 @@ import java.util.UUID;
 
 /**
  * /afly 指令處理 + Tab 補全。
- *   on / off / info / help → 所有玩家
- *   reload                 → 需 afly.admin
+ *   on / off / info / help / summary / notify → 所有玩家
+ *   reload / lang                             → 需 afly.admin
  */
 public class AFlyCommand implements CommandExecutor, TabCompleter {
 
@@ -36,16 +36,31 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
             case "info" -> sendInfo(sender);
             case "on" -> toggle(sender, true);
             case "off" -> toggle(sender, false);
+            case "summary" -> prefSummary(sender, args);
+            case "notify" -> prefNotify(sender, args);
             case "reload" -> {
-                if (!sender.hasPermission(AFly.ADMIN_PERM)) {
-                    sender.sendMessage(plugin.lang().component("no-permission"));
-                } else {
-                    plugin.reloadAll();
-                    sender.sendMessage(plugin.lang().component("reloaded"));
+                if (notAdmin(sender)) break;
+                plugin.reloadAll();
+                sender.sendMessage(plugin.lang().component("reloaded"));
+            }
+            case "lang" -> {
+                if (notAdmin(sender)) break;
+                if (args.length < 2) {
+                    sender.sendMessage(plugin.lang().component("lang-usage",
+                            Map.of("langs", String.join(", ", plugin.availableLanguages()))));
+                    break;
                 }
+                plugin.setLanguage(args[1]);
+                sender.sendMessage(plugin.lang().component("lang-changed", Map.of("lang", args[1])));
             }
             default -> sender.sendMessage(plugin.lang().component("unknown-arg", Map.of("arg", sub)));
         }
+        return true;
+    }
+
+    private boolean notAdmin(CommandSender sender) {
+        if (sender.hasPermission(AFly.ADMIN_PERM)) return false;
+        sender.sendMessage(plugin.lang().component("no-permission"));
         return true;
     }
 
@@ -60,13 +75,43 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
             p.setAllowFlight(true);
             p.sendMessage(plugin.lang().component("fly-enabled"));
         } else {
+            // 關閉前先結算明細
+            plugin.endFlight(p);
             plugin.flyEnabled().remove(id);
-            plugin.wasFlying().remove(id);
-            plugin.lastZone().remove(id);
             p.setFlying(false);
             p.setAllowFlight(false);
             p.sendMessage(plugin.lang().component("fly-disabled"));
         }
+    }
+
+    private void prefSummary(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player p)) {
+            sender.sendMessage(plugin.lang().component("players-only"));
+            return;
+        }
+        boolean value = resolveToggle(args, plugin.playerData().showSummary(p.getUniqueId()));
+        plugin.playerData().setShowSummary(p.getUniqueId(), value);
+        p.sendMessage(plugin.lang().component(value ? "summary-on" : "summary-off"));
+    }
+
+    private void prefNotify(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player p)) {
+            sender.sendMessage(plugin.lang().component("players-only"));
+            return;
+        }
+        boolean value = resolveToggle(args, plugin.playerData().ownerNotify(p.getUniqueId()));
+        plugin.playerData().setOwnerNotify(p.getUniqueId(), value);
+        p.sendMessage(plugin.lang().component(value ? "notify-on" : "notify-off"));
+    }
+
+    /** 有給 on/off 就用它，否則切換目前值。 */
+    private boolean resolveToggle(String[] args, boolean current) {
+        if (args.length >= 2) {
+            String a = args[1].toLowerCase(Locale.ROOT);
+            if (a.equals("on")) return true;
+            if (a.equals("off")) return false;
+        }
+        return !current;
     }
 
     private void sendHelp(CommandSender s) {
@@ -94,14 +139,31 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length != 1) return Collections.emptyList();
-        List<String> opts = new ArrayList<>(Arrays.asList("on", "off", "info", "help"));
-        if (sender.hasPermission(AFly.ADMIN_PERM)) opts.add("reload");
+        if (args.length == 1) {
+            List<String> opts = new ArrayList<>(Arrays.asList("on", "off", "info", "help", "summary", "notify"));
+            if (sender.hasPermission(AFly.ADMIN_PERM)) {
+                opts.add("reload");
+                opts.add("lang");
+            }
+            return filter(opts, args[0]);
+        }
+        if (args.length == 2) {
+            String first = args[0].toLowerCase(Locale.ROOT);
+            if (first.equals("summary") || first.equals("notify")) {
+                return filter(Arrays.asList("on", "off"), args[1]);
+            }
+            if (first.equals("lang") && sender.hasPermission(AFly.ADMIN_PERM)) {
+                return filter(plugin.availableLanguages(), args[1]);
+            }
+        }
+        return Collections.emptyList();
+    }
 
-        String prefix = args[0].toLowerCase(Locale.ROOT);
+    private List<String> filter(List<String> options, String prefix) {
+        String p = prefix.toLowerCase(Locale.ROOT);
         List<String> out = new ArrayList<>();
-        for (String o : opts) {
-            if (o.startsWith(prefix)) out.add(o);
+        for (String o : options) {
+            if (o.toLowerCase(Locale.ROOT).startsWith(p)) out.add(o);
         }
         return out;
     }

@@ -24,6 +24,23 @@ insufficient: "&4[AFly] &cInsufficient funds — flight disabled. Top up, then &
 status-on: "&fYour paid flight: &aON"
 status-off: "&fYour paid flight: &cOFF"
 
+# Flight summary (shown when flight ends). {duration} {spent}
+summary-line: "&b[AFly] &fYou flew for &e{duration}&f and spent &e{spent}&f in total."
+summary-hint: "&7&o(Don't want this? /afly summary off)"
+summary-on: "&aFlight summary enabled."
+summary-off: "&cFlight summary disabled."
+# Duration units used by {duration}
+dur-min: "m"
+dur-sec: "s"
+
+# Residence-owner alert toggle
+notify-on: "&aYou'll be alerted when players fly in your residences."
+notify-off: "&cYou'll no longer be alerted about flights in your residences."
+
+# Language command
+lang-changed: "&aServer language set to &e{lang}&a and reloaded."
+lang-usage: "&cUsage: &f/afly lang <language>&c. Available: &f{langs}"
+
 info:
   - "&b===== AFly ====="
   - "&fResidence rate: &a{cost_res}&f/sec"
@@ -35,6 +52,10 @@ help:
   - "  &7/afly on   &8- &fEnable paid flight (then double-tap space)"
   - "  &7/afly off  &8- &fDisable paid flight"
   - "  &7/afly info &8- &fShow rates and your status"
+  - "  &7/afly summary on|off &8- &fToggle your flight summary"
+  - "  &7/afly notify on|off &8- &fToggle alerts for flights in your land"
+  - "  &7/afly lang <language> &8- &fSet server language &8(admin)"
+  - "  &7/afly reload &8- &fReload config & language &8(admin)"
   - "  &7/afly help &8- &fShow this help"
   - "  &fRates: residence &a{cost_res}&f/sec, wilderness &c{cost_wild}&f/sec"
   - "&8&m-------------------------------"

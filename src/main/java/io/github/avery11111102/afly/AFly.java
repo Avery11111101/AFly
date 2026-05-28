@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,12 +14,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 /**
@@ -47,6 +51,11 @@ public class AFly extends JavaPlugin {
     private final Set<UUID> wasFlying = new HashSet<>();
     private final Map<UUID, String> lastZone = new HashMap<>();
 
+    // 飛行明細：本次飛行起始時間（毫秒）與累計花費
+    private final Map<UUID, Long> flightStart = new HashMap<>();
+    private final Map<UUID, Double> flightSpent = new HashMap<>();
+
+    private PlayerData playerData;
     private ChargeTask task;
 
     @Override
@@ -71,6 +80,9 @@ public class AFly extends JavaPlugin {
             getLogger().warning("Residence API 反射初始化失敗，領地判斷可能無法運作。");
         }
 
+        playerData = new PlayerData(this);
+        playerData.load();
+
         reloadAll();
 
         AFlyCommand cmd = new AFlyCommand(this);
@@ -83,9 +95,12 @@ public class AFly extends JavaPlugin {
     @Override
     public void onDisable() {
         if (task != null) task.cancel();
+        if (playerData != null) playerData.save();
         flyEnabled.clear();
         wasFlying.clear();
         lastZone.clear();
+        flightStart.clear();
+        flightSpent.clear();
     }
 
     /** 重新讀取設定與語言檔，並重啟扣款排程。 */
@@ -175,10 +190,80 @@ public class AFly extends JavaPlugin {
         return String.format(Locale.US, "%.2f", d);
     }
 
+    // ---- 飛行明細 / 工作階段 ----
+
+    /** 記錄一次飛行的開始（起飛時呼叫）。 */
+    public void startSession(UUID id) {
+        flightStart.put(id, System.currentTimeMillis());
+        flightSpent.put(id, 0.0);
+    }
+
+    /** 累加本次飛行花費。 */
+    public void addSpent(UUID id, double amount) {
+        flightSpent.merge(id, amount, Double::sum);
+    }
+
+    /** 清除一次飛行的暫存狀態（不顯示明細）。 */
+    public void clearSession(UUID id) {
+        flightStart.remove(id);
+        flightSpent.remove(id);
+        wasFlying.remove(id);
+        lastZone.remove(id);
+    }
+
+    /** 結束飛行：若玩家有開啟明細，顯示「飛了多久 + 共花多少」，然後清除狀態。 */
+    public void endFlight(Player p) {
+        UUID id = p.getUniqueId();
+        Long start = flightStart.get(id);
+        Double spent = flightSpent.get(id);
+        clearSession(id);
+        if (start == null) return; // 沒有實際飛行工作階段
+        if (!playerData.showSummary(id)) return;
+
+        long seconds = Math.max(0L, (System.currentTimeMillis() - start) / 1000L);
+        Map<String, String> ph = new HashMap<>();
+        ph.put("duration", formatDuration(seconds));
+        ph.put("spent", fmt(spent == null ? 0.0 : spent));
+        p.sendMessage(lang.component("summary-line", ph));
+        p.sendMessage(lang.component("summary-hint"));
+    }
+
+    private String formatDuration(long seconds) {
+        long m = seconds / 60L;
+        long s = seconds % 60L;
+        String minUnit = lang.raw("dur-min");
+        String secUnit = lang.raw("dur-sec");
+        return (m > 0 ? m + minUnit : "") + s + secUnit;
+    }
+
+    /** 遊戲內語言切換：寫入 config 的 language，重生本地化 config.yml 並重載。 */
+    public void setLanguage(String language) {
+        getConfig().set("language", language);
+        saveConfig();
+        reloadAll();
+    }
+
+    /** 可用語言清單：內建 en/zh_TW + 玩家自行新增於 lang/ 的 *.yml。 */
+    public List<String> availableLanguages() {
+        Set<String> set = new TreeSet<>();
+        set.add("en");
+        set.add("zh_TW");
+        File langDir = new File(getDataFolder(), "lang");
+        File[] files = langDir.listFiles((dir, name) -> name.endsWith(".yml"));
+        if (files != null) {
+            for (File f : files) {
+                String n = f.getName();
+                set.add(n.substring(0, n.length() - 4));
+            }
+        }
+        return new ArrayList<>(set);
+    }
+
     // ---- getters ----
     public Economy economy() { return economy; }
     public ResidenceHook residence() { return residence; }
     public Lang lang() { return lang; }
+    public PlayerData playerData() { return playerData; }
     public double costWild() { return costWild; }
     public double costRes() { return costRes; }
     public boolean notifyOwner() { return notifyOwner; }

@@ -72,6 +72,11 @@ public class Lang {
         return component(key, null);
     }
 
+    /** 取得原始字串（給需要拼接的場合，例如時間單位）。 */
+    public String raw(String key) {
+        return messages.getString(key, key);
+    }
+
     public List<Component> componentList(String key, Map<String, String> placeholders) {
         List<Component> out = new ArrayList<>();
         for (String line : messages.getStringList(key)) {

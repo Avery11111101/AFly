@@ -18,8 +18,11 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 - 🛫 **Takeoff notice** — shows whether you're inside a region or in the wild, the region name, and the current rate.
 - 👤 **Owner notification** — flying inside someone's region notifies that region's owner (configurable).
 - 🔔 **Boundary alerts** — crossing into/out of a region (rate change) is announced instantly.
+- 🧾 **Flight summary** — on landing, players see how long they flew and how much they spent (per-player toggle).
 - 📊 A persistent **action bar** shows your current zone, rate, and balance.
 - ⌨️ `/afly` sub-commands support **tab completion**.
+- 🔧 **Per-player preferences** (summary on/off, owner-alerts on/off) persist in `playerdata.yml`.
+- 🌍 **In-game language switching** via `/afly lang <language>`.
 - 🌐 **Multi-language** via `lang/*.yml` (ships with English & Traditional Chinese).
 - 🛡️ **Bypass permission** (`fly.charge.bypass`) for staff who shouldn't be charged.
 - 💸 Out of money → **forced landing** and paid flight auto-disabled.
@@ -104,7 +107,10 @@ Everything lives under `/afly` (sub-commands tab-complete):
 | `/afly on` | everyone | Enable your paid flight (then double-tap space to fly) |
 | `/afly off` | everyone | Disable your paid flight |
 | `/afly info` | everyone | Show rates and your current status |
+| `/afly summary [on\|off]` | everyone | Toggle your end-of-flight summary (per player) |
+| `/afly notify [on\|off]` | everyone | Toggle alerts for flights in *your* residences (per land owner) |
 | `/afly help` | everyone | Show the help menu |
+| `/afly lang <language>` | `afly.admin` | Switch the server language (config + messages) in-game |
 | `/afly reload` | `afly.admin` | Reload config & language files |
 
 > Running `/afly` with no argument is the same as `/afly help`.

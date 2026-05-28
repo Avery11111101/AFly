@@ -24,6 +24,23 @@ insufficient: "&4[AFly] &c餘額不足，已強制關閉飛行！請補充金錢
 status-on: "&f你的付費飛行：&a已開啟"
 status-off: "&f你的付費飛行：&c未開啟"
 
+# 飛行明細（飛行結束時顯示）。{duration} {spent}
+summary-line: "&b[AFly] &f你飛行了 &e{duration}&f，共花費 &e{spent}&f。"
+summary-hint: "&7&o（不想看明細？輸入 /afly summary off）"
+summary-on: "&a已開啟飛行明細。"
+summary-off: "&c已關閉飛行明細。"
+# {duration} 使用的時間單位
+dur-min: "分"
+dur-sec: "秒"
+
+# 地主通知開關
+notify-on: "&a當有玩家在你的領地飛行時，你將收到通知。"
+notify-off: "&c你將不再收到他人在你領地飛行的通知。"
+
+# 語言切換指令
+lang-changed: "&a伺服器語言已設為 &e{lang}&a 並重新載入。"
+lang-usage: "&c用法：&f/afly lang <語言>&c。可用：&f{langs}"
+
 info:
   - "&b===== AFly 費率 ====="
   - "&f領地內費率：&a{cost_res}&f/秒"
@@ -35,6 +52,10 @@ help:
   - "  &7/afly on   &8- &f開啟付費飛行（之後雙擊空白鍵起飛）"
   - "  &7/afly off  &8- &f關閉付費飛行"
   - "  &7/afly info &8- &f查看費率與自己的狀態"
+  - "  &7/afly summary on|off &8- &f開關你的飛行明細"
+  - "  &7/afly notify on|off &8- &f開關「他人在你領地飛行」的通知"
+  - "  &7/afly lang <語言> &8- &f設定伺服器語言 &8(管理員)"
+  - "  &7/afly reload &8- &f重新載入設定與語言 &8(管理員)"
   - "  &7/afly help &8- &f顯示本說明"
   - "  &f費率：領地內 &a{cost_res}&f/秒、荒野 &c{cost_wild}&f/秒"
   - "&8&m-------------------------------"
