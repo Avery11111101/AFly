@@ -1,0 +1,29 @@
+# ============================================================
+#  AFly 設定檔
+#  作者：avery11111102
+# ============================================================
+
+# 使用哪個語言檔：lang/<language>.yml（內建 en、zh_TW）
+# 提示：改這裡再執行 /afly reload —— 本檔的「註解」也會跟著切換成所選語言（若有對應模板）。
+language: zh_TW
+
+# 每隔多少 tick 扣一次款（20 tick = 1 秒）
+interval-ticks: 20
+
+# 每次扣款金額
+cost:
+  # 領地外（荒野）
+  wilderness: 5.0
+  # 領地內
+  residence: 1.0
+
+# 哪些遊戲模式飛行時會被收費（其餘模式免費）
+charged-gamemodes:
+  - SURVIVAL
+  - ADVENTURE
+
+# 在他人領地飛行時，是否通知該領地擁有者
+notify-owner: true
+
+# 動作列是否顯示剩餘餘額
+actionbar-show-balance: true

@@ -1,0 +1,30 @@
+# ============================================================
+#  AFly configuration
+#  Author: avery11111102
+# ============================================================
+
+# Which language file to use: lang/<language>.yml (bundled: en, zh_TW)
+# Tip: change this and run /afly reload — the comments in THIS file will
+#      also switch to the selected language (when a template is available).
+language: en
+
+# Ticks between each charge (20 ticks = 1 second)
+interval-ticks: 20
+
+# Cost taken per charge
+cost:
+  # Outside any region (wilderness)
+  wilderness: 5.0
+  # Inside a Residence region
+  residence: 1.0
+
+# Which game modes are charged while flying (others fly for free)
+charged-gamemodes:
+  - SURVIVAL
+  - ADVENTURE
+
+# Notify a region's owner when someone else flies inside their region
+notify-owner: true
+
+# Show remaining balance on the action bar
+actionbar-show-balance: true

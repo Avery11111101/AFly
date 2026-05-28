@@ -1,0 +1,40 @@
+# AFly 語言檔（繁體中文）
+# 顏色代碼用 '&'。可用變數：{residence} {cost} {balance} {player} {arg} {cost_res} {cost_wild}
+
+fly-enabled: "&a已開啟付費飛行！雙擊空白鍵即可起飛，飛行時將依所在區域計費。"
+fly-disabled: "&c已關閉付費飛行。"
+players-only: "&c此指令僅限玩家使用。"
+no-permission: "&c你沒有權限這麼做。"
+reloaded: "&aAFly 設定已重新載入。"
+unknown-arg: "&c未知的參數：&f{arg}&c，請輸入 &f/afly help&c。"
+
+takeoff-residence: "&e你已起飛！這裡是 &a領地「{residence}」&e，費率 &a{cost}&e/秒。"
+takeoff-wild: "&e你已起飛！這裡是 &c荒野（領地外）&e，費率 &c{cost}&e/秒。"
+
+enter-residence: "&6⚠ 你已進入領地「{residence}」，費率變為 &a{cost}&6/秒。"
+enter-wild: "&6⚠ 你已離開領地、進入荒野，費率變為 &c{cost}&6/秒。"
+
+owner-notify: "&b[AFly] &f玩家 &e{player} &f正在你的領地 &a「{residence}」&f 飛行。"
+
+actionbar-residence: "&a✈ 領地內飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
+actionbar-wild: "&c✈ 荒野飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
+
+insufficient: "&4[AFly] &c餘額不足，已強制關閉飛行！請補充金錢後重新輸入 &f/afly on&c。"
+
+status-on: "&f你的付費飛行：&a已開啟"
+status-off: "&f你的付費飛行：&c未開啟"
+
+info:
+  - "&b===== AFly 費率 ====="
+  - "&f領地內費率：&a{cost_res}&f/秒"
+  - "&f荒野費率：　&c{cost_wild}&f/秒"
+
+help:
+  - "&8&m-------------------------------"
+  - "  &b&l✈ AFly &f— 付費飛行"
+  - "  &7/afly on   &8- &f開啟付費飛行（之後雙擊空白鍵起飛）"
+  - "  &7/afly off  &8- &f關閉付費飛行"
+  - "  &7/afly info &8- &f查看費率與自己的狀態"
+  - "  &7/afly help &8- &f顯示本說明"
+  - "  &f費率：領地內 &a{cost_res}&f/秒、荒野 &c{cost_wild}&f/秒"
+  - "&8&m-------------------------------"

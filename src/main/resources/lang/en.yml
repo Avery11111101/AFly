@@ -1,0 +1,40 @@
+# AFly language file (English)
+# Color codes use '&'. Placeholders: {residence} {cost} {balance} {player} {arg} {cost_res} {cost_wild}
+
+fly-enabled: "&aPaid flight enabled! Double-tap space to take off — you'll be charged based on your location."
+fly-disabled: "&cPaid flight disabled."
+players-only: "&cThis command can only be used by players."
+no-permission: "&cYou don't have permission to do that."
+reloaded: "&aAFly configuration reloaded."
+unknown-arg: "&cUnknown argument: &f{arg}&c. Type &f/afly help&c."
+
+takeoff-residence: "&eYou took off! You're in &aresidence \"{residence}\"&e — rate &a{cost}&e/sec."
+takeoff-wild: "&eYou took off! You're in the &cwilderness&e — rate &c{cost}&e/sec."
+
+enter-residence: "&6⚠ Entered residence \"{residence}\" — rate is now &a{cost}&6/sec."
+enter-wild: "&6⚠ Left into the wilderness — rate is now &c{cost}&6/sec."
+
+owner-notify: "&b[AFly] &e{player} &fis flying in your residence &a\"{residence}\"&f."
+
+actionbar-residence: "&a✈ Flying in residence &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
+actionbar-wild: "&c✈ Flying in wilderness &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
+
+insufficient: "&4[AFly] &cInsufficient funds — flight disabled. Top up, then &f/afly on&c again."
+
+status-on: "&fYour paid flight: &aON"
+status-off: "&fYour paid flight: &cOFF"
+
+info:
+  - "&b===== AFly ====="
+  - "&fResidence rate: &a{cost_res}&f/sec"
+  - "&fWilderness rate: &c{cost_wild}&f/sec"
+
+help:
+  - "&8&m-------------------------------"
+  - "  &b&l✈ AFly &f— paid flight"
+  - "  &7/afly on   &8- &fEnable paid flight (then double-tap space)"
+  - "  &7/afly off  &8- &fDisable paid flight"
+  - "  &7/afly info &8- &fShow rates and your status"
+  - "  &7/afly help &8- &fShow this help"
+  - "  &fRates: residence &a{cost_res}&f/sec, wilderness &c{cost_wild}&f/sec"
+  - "&8&m-------------------------------"
