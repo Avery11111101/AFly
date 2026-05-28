@@ -2,6 +2,8 @@
 
 **English** · [繁體中文](docs/README.zh-TW.md)
 
+📥 **Download on [Modrinth](https://modrinth.com/plugin/afly)**
+
 > A lightweight **Paper plugin** that charges players money per second while flying, with different rates inside vs. outside [Residence](https://github.com/Zrips/Residence) regions. Named after its command, `/afly`.
 
 Players run `/afly on` to enable paid flight; once they double-tap space to take off, money is deducted **every second** based on where they are. Flying inside **your own Residence** is cheap (default `1`/sec); flying over **someone else's land or the open wilderness** costs more (default `5`/sec). When a player runs out of money they are dropped out of flight automatically.
@@ -49,7 +51,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
    - An economy plugin, e.g. [EssentialsX](https://essentialsx.net/downloads.html) (`EssentialsX.jar` + `EssentialsXSpawn` optional)
    - [Residence](https://github.com/Zrips/Residence/releases)
 2. **Confirm economy works.** Start the server once, join, run `/balance` — you should see a balance. (EssentialsX hooks into Vault automatically.)
-3. **Install AFly.** Download `AFly-x.x.x.jar` from the [Releases](../../releases) page and drop it into `plugins/`.
+3. **Install AFly.** Download `AFly-x.x.x.jar` from [Modrinth](https://modrinth.com/plugin/afly) (or the [Releases](../../releases) page) and drop it into `plugins/`.
 4. **Restart the server** — do a **full restart** (stop, then start), not `/reload`.
 5. **Config is generated** at `plugins/AFly/config.yml` and `plugins/AFly/lang/`. Edit if desired, then run `/afly reload`.
 6. **Test:** `/afly on`, double-tap space to fly, and watch the action bar tick your balance down.

@@ -2,6 +2,8 @@
 
 [English](../README.md) · **繁體中文**
 
+📥 **前往 [Modrinth](https://modrinth.com/plugin/afly) 下載**
+
 > 一個輕量的 **Paper 插件**：玩家飛行時依所在位置每秒扣款，[Residence](https://github.com/Zrips/Residence) 領地內外費率不同。名稱取自指令 `/afly`。
 
 玩家用 `/afly on` 開啟「付費飛行」後，雙擊空白鍵起飛即**每秒**依所在位置自動扣款。在**自己的領地**內收便宜的費率（預設 `1`/秒）；飛到**別人的領地或荒野**則收較高費率（預設 `5`/秒）；餘額不足時自動落地。
@@ -49,7 +51,7 @@
    - 一個經濟插件，例如 [EssentialsX](https://essentialsx.net/downloads.html)
    - [Residence](https://github.com/Zrips/Residence/releases)
 2. **確認經濟正常。** 先啟動一次伺服器、進遊戲打 `/balance`，應能看到餘額（EssentialsX 會自動掛上 Vault）。
-3. **安裝 AFly。** 從 [Releases](../../releases) 下載 `AFly-x.x.x.jar`，放進 `plugins/`。
+3. **安裝 AFly。** 從 [Modrinth](https://modrinth.com/plugin/afly) 下載 `AFly-x.x.x.jar`（或 [Releases](../../releases) 頁面），放進 `plugins/`。
 4. **完整重啟伺服器**（先 Stop 再 Start），不要用 `/reload`。
 5. **設定檔自動生成**於 `plugins/AFly/config.yml` 與 `plugins/AFly/lang/`。要改的話改完執行 `/afly reload`。
 6. **測試：** `/afly on`，雙擊空白鍵起飛，觀察動作列餘額每秒遞減。
