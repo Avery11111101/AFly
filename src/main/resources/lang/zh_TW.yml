@@ -8,15 +8,18 @@ no-permission: "&c你沒有權限這麼做。"
 reloaded: "&aAFly 設定已重新載入。"
 unknown-arg: "&c未知的參數：&f{arg}&c，請輸入 &f/afly help&c。"
 
-takeoff-residence: "&e你已起飛！這裡是 &a領地「{residence}」&e，費率 &a{cost}&e/秒。"
+takeoff-residence: "&e你已起飛！這裡是 &a你的領地「{residence}」&e，費率 &a{cost}&e/秒。"
+takeoff-other: "&e你已起飛！這裡是 &6別人的領地「{residence}」&e，以荒野費率計費，&c{cost}&e/秒。"
 takeoff-wild: "&e你已起飛！這裡是 &c荒野（領地外）&e，費率 &c{cost}&e/秒。"
 
-enter-residence: "&6⚠ 你已進入領地「{residence}」，費率變為 &a{cost}&6/秒。"
+enter-residence: "&6⚠ 你已進入你的領地「{residence}」，費率變為 &a{cost}&6/秒。"
+enter-other: "&6⚠ 你已進入別人的領地「{residence}」，以荒野費率計費，&c{cost}&6/秒。"
 enter-wild: "&6⚠ 你已離開領地、進入荒野，費率變為 &c{cost}&6/秒。"
 
 owner-notify: "&b[AFly] &f玩家 &e{player} &f正在你的領地 &a「{residence}」&f 飛行。"
 
-actionbar-residence: "&a✈ 領地內飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
+actionbar-residence: "&a✈ 自己領地內飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
+actionbar-other: "&6✈ 飛行於「{residence}」（非你的領地）&7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
 actionbar-wild: "&c✈ 荒野飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
 
 insufficient: "&4[AFly] &c餘額不足，已強制關閉飛行！請補充金錢後重新輸入 &f/afly on&c。"

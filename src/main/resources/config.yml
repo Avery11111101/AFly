@@ -13,9 +13,9 @@ interval-ticks: 20
 
 # Cost taken per charge
 cost:
-  # Outside any region (wilderness)
+  # Wilderness, OR someone else's residence (only your own land gets the cheap rate)
   wilderness: 5.0
-  # Inside a Residence region
+  # Inside a residence you OWN
   residence: 1.0
 
 # Which game modes are charged while flying (others fly for free)

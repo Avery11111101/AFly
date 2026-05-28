@@ -4,7 +4,7 @@
 
 > A lightweight **Paper plugin** that charges players money per second while flying, with different rates inside vs. outside [Residence](https://github.com/Zrips/Residence) regions. Named after its command, `/afly`.
 
-Players run `/afly on` to enable paid flight; once they double-tap space to take off, money is deducted **every second** based on where they are. Flying **inside a Residence** is cheap (default `1`/sec); flying in the **wilderness** is more expensive (default `5`/sec). When a player runs out of money they are dropped out of flight automatically.
+Players run `/afly on` to enable paid flight; once they double-tap space to take off, money is deducted **every second** based on where they are. Flying inside **your own Residence** is cheap (default `1`/sec); flying over **someone else's land or the open wilderness** costs more (default `5`/sec). When a player runs out of money they are dropped out of flight automatically.
 
 > This is the native Java rewrite of the original AFly Skript — no Skript, skript-reflect, or PlaceholderAPI required.
 
@@ -14,7 +14,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 
 - 🎮 **Per-player toggle** — anyone can `/afly on` / `off` to control their own paid flight.
 - ⏱️ Charges **per second, only while actually flying** (no flight = no charge). Survival / Adventure only (configurable).
-- 🏠 **Different rates inside vs. outside** a Residence region (reads Residence directly).
+- 🏠 **Cheap only on your own land** — the low rate applies inside residences *you own*; someone else's residence is charged at the wilderness rate.
 - 🛫 **Takeoff notice** — shows whether you're inside a region or in the wild, the region name, and the current rate.
 - 👤 **Owner notification** — flying inside someone's region notifies that region's owner (configurable).
 - 🔔 **Boundary alerts** — crossing into/out of a region (rate change) is announced instantly.
@@ -127,6 +127,18 @@ Everything lives under `/afly` (sub-commands tab-complete):
 ---
 
 ## 📝 Changelog
+
+### v1.3.0
+- Someone else's residence is now charged at the **wilderness rate** — the cheap rate applies only inside residences you own. Adds dedicated "other residence" notices.
+
+### v1.2.0
+- **Flight summary** on landing (time aloft + total spent) with a per-player `/afly summary` toggle.
+- **`/afly notify`** lets land owners toggle "someone is flying in your residence" alerts (per player).
+- **`/afly lang <language>`** switches the server language in-game.
+- Per-player preferences persist in `playerdata.yml`.
+
+### v1.1.0
+- `config.yml` now defaults to **English**; switching `language` and running `/afly reload` localizes the config comments too (values preserved).
 
 ### v1.0.0
 - First native release: per-player `/afly` paid-flight toggle, per-second billing with inside/outside Residence rates, takeoff & boundary notices, owner notifications, tab completion, action bar, forced landing when out of money.

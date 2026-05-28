@@ -8,15 +8,18 @@ no-permission: "&cYou don't have permission to do that."
 reloaded: "&aAFly configuration reloaded."
 unknown-arg: "&cUnknown argument: &f{arg}&c. Type &f/afly help&c."
 
-takeoff-residence: "&eYou took off! You're in &aresidence \"{residence}\"&e — rate &a{cost}&e/sec."
+takeoff-residence: "&eYou took off! You're in &ayour residence \"{residence}\"&e — rate &a{cost}&e/sec."
+takeoff-other: "&eYou took off! You're in &6someone else's residence \"{residence}\"&e — charged as wilderness, rate &c{cost}&e/sec."
 takeoff-wild: "&eYou took off! You're in the &cwilderness&e — rate &c{cost}&e/sec."
 
-enter-residence: "&6⚠ Entered residence \"{residence}\" — rate is now &a{cost}&6/sec."
+enter-residence: "&6⚠ Entered your residence \"{residence}\" — rate is now &a{cost}&6/sec."
+enter-other: "&6⚠ Entered someone else's residence \"{residence}\" — charged as wilderness, rate &c{cost}&6/sec."
 enter-wild: "&6⚠ Left into the wilderness — rate is now &c{cost}&6/sec."
 
 owner-notify: "&b[AFly] &e{player} &fis flying in your residence &a\"{residence}\"&f."
 
-actionbar-residence: "&a✈ Flying in residence &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
+actionbar-residence: "&a✈ Flying in your residence &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
+actionbar-other: "&6✈ Flying in \"{residence}\" (not yours) &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
 actionbar-wild: "&c✈ Flying in wilderness &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
 
 insufficient: "&4[AFly] &cInsufficient funds — flight disabled. Top up, then &f/afly on&c again."

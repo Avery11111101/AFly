@@ -10,8 +10,17 @@ import java.util.UUID;
 /**
  * 週期性任務：每隔 interval-ticks 檢查全服玩家，對「已開啟 afly 且正在飛行」者扣款，
  * 並處理起飛提示、跨界提醒、通知地主、動作列、飛行明細與餘額不足落地。
+ *
+ * 計價區域分三種：
+ *   OWN   (0) = 自己的領地        → 便宜（cost-res）
+ *   OTHER (1) = 別人的領地        → 以荒野費率計費（cost-wild）
+ *   WILD  (2) = 荒野（無領地）     → 荒野費率（cost-wild）
  */
 public class ChargeTask extends BukkitRunnable {
+
+    private static final int ZONE_OWN = 0;
+    private static final int ZONE_OTHER = 1;
+    private static final int ZONE_WILD = 2;
 
     private final AFly plugin;
 
@@ -36,35 +45,48 @@ public class ChargeTask extends BukkitRunnable {
                 continue;
             }
 
-            // 沒在飛 → 不處理
             if (!p.isFlying()) continue;
-
-            // 只對指定遊戲模式收費
             if (!plugin.chargedModes().contains(p.getGameMode())) continue;
-
-            // 免費權限
             if (p.hasPermission(AFly.BYPASS_PERM)) continue;
 
-            // 判斷所在領地
+            // 判斷所在領地與計價區域
             Object res = plugin.residence().getResidence(p.getLocation());
-            boolean inRes = res != null;
-            String name = inRes ? plugin.residence().nameOf(res) : null;
-            if (inRes && (name == null || name.isEmpty())) name = "?";
-            double cost = inRes ? plugin.costRes() : plugin.costWild();
-            String zoneKey = inRes ? ("res:" + name) : "wild";
+            String name = null;
+            int zone;
+            double cost;
+            if (res == null) {
+                zone = ZONE_WILD;
+                cost = plugin.costWild();
+            } else {
+                name = plugin.residence().nameOf(res);
+                if (name == null || name.isEmpty()) name = "?";
+                String owner = plugin.residence().ownerOf(res);
+                boolean own = owner != null && owner.equalsIgnoreCase(p.getName());
+                if (own) {
+                    zone = ZONE_OWN;
+                    cost = plugin.costRes();
+                } else {
+                    // 別人的領地：算荒野價
+                    zone = ZONE_OTHER;
+                    cost = plugin.costWild();
+                }
+            }
+            String zoneKey = switch (zone) {
+                case ZONE_OWN -> "own:" + name;
+                case ZONE_OTHER -> "other:" + name;
+                default -> "wild";
+            };
 
             boolean wasFly = plugin.wasFlying().contains(id);
             String prevZone = plugin.lastZone().get(id);
 
             if (!wasFly) {
-                // 剛起飛 → 開始一段飛行工作階段
                 plugin.startSession(id);
-                sendZone(p, "takeoff-residence", "takeoff-wild", inRes, name, cost);
-                if (inRes) notifyOwner(p, res, name);
+                sendZone(p, "takeoff", zone, name, cost);
+                if (zone == ZONE_OTHER) notifyOwner(p, res, name);
             } else if (prevZone != null && !prevZone.equals(zoneKey)) {
-                // 飛行中跨越領地邊界，費率變動
-                sendZone(p, "enter-residence", "enter-wild", inRes, name, cost);
-                if (inRes) notifyOwner(p, res, name);
+                sendZone(p, "enter", zone, name, cost);
+                if (zone == ZONE_OTHER) notifyOwner(p, res, name);
             }
 
             plugin.wasFlying().add(id);
@@ -75,10 +97,10 @@ public class ChargeTask extends BukkitRunnable {
             if (balance >= cost) {
                 plugin.economy().withdrawPlayer(p, cost);
                 plugin.addSpent(id, cost);
-                sendActionBar(p, inRes, cost);
+                sendActionBar(p, zone, name, cost);
             } else {
                 p.sendMessage(plugin.lang().component("insufficient"));
-                plugin.endFlight(p); // 顯示明細並清除狀態
+                plugin.endFlight(p);
                 p.setFlying(false);
                 p.setAllowFlight(false);
                 plugin.flyEnabled().remove(id);
@@ -86,33 +108,45 @@ public class ChargeTask extends BukkitRunnable {
         }
     }
 
-    private void sendZone(Player p, String resKey, String wildKey, boolean inRes, String name, double cost) {
+    /** prefix = "takeoff" 或 "enter"。依區域挑選對應的訊息鍵。 */
+    private void sendZone(Player p, String prefix, int zone, String name, double cost) {
         Map<String, String> ph = new HashMap<>();
         ph.put("cost", plugin.fmt(cost));
-        if (inRes) {
-            ph.put("residence", name);
-            p.sendMessage(plugin.lang().component(resKey, ph));
-        } else {
-            p.sendMessage(plugin.lang().component(wildKey, ph));
+        switch (zone) {
+            case ZONE_OWN -> {
+                ph.put("residence", name);
+                p.sendMessage(plugin.lang().component(prefix + "-residence", ph));
+            }
+            case ZONE_OTHER -> {
+                ph.put("residence", name);
+                p.sendMessage(plugin.lang().component(prefix + "-other", ph));
+            }
+            default -> p.sendMessage(plugin.lang().component(prefix + "-wild", ph));
         }
     }
 
-    private void sendActionBar(Player p, boolean inRes, double cost) {
+    private void sendActionBar(Player p, int zone, String name, double cost) {
         Map<String, String> ph = new HashMap<>();
         ph.put("cost", plugin.fmt(cost));
+        ph.put("residence", name == null ? "" : name);
         ph.put("balance", plugin.showBalance() ? plugin.fmt(plugin.economy().getBalance(p)) : "");
-        p.sendActionBar(plugin.lang().component(inRes ? "actionbar-residence" : "actionbar-wild", ph));
+        String key = switch (zone) {
+            case ZONE_OWN -> "actionbar-residence";
+            case ZONE_OTHER -> "actionbar-other";
+            default -> "actionbar-wild";
+        };
+        p.sendActionBar(plugin.lang().component(key, ph));
     }
 
     /** 通知地主（自帶守門：伺服器主開關 + 地主個人開關 + 不通知自己）。 */
     private void notifyOwner(Player flyer, Object res, String name) {
-        if (!plugin.notifyOwner()) return; // 伺服器主開關關閉
+        if (!plugin.notifyOwner()) return;
         String owner = plugin.residence().ownerOf(res);
         if (owner == null || owner.isEmpty()) return;
-        if (owner.equalsIgnoreCase(flyer.getName())) return; // 飛自己領地不通知自己
+        if (owner.equalsIgnoreCase(flyer.getName())) return;
         Player ownerP = plugin.getServer().getPlayerExact(owner);
-        if (ownerP == null) return; // 地主不在線上
-        if (!plugin.playerData().ownerNotify(ownerP.getUniqueId())) return; // 地主已關閉通知
+        if (ownerP == null) return;
+        if (!plugin.playerData().ownerNotify(ownerP.getUniqueId())) return;
         Map<String, String> ph = new HashMap<>();
         ph.put("player", flyer.getName());
         ph.put("residence", name);
