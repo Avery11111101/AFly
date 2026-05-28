@@ -1,6 +1,6 @@
 # ============================================================
 #  AFly configuration
-#  Author: avery11111102
+#  Authors: avery11111102, Avery11111101
 #  GitHub: https://github.com/Avery11111101/AFly
 # ============================================================
 
@@ -29,3 +29,20 @@ notify-owner: true
 
 # Show remaining balance on the action bar
 actionbar-show-balance: true
+
+# Where paid flight is allowed. Flying in a disallowed spot drops the player safely.
+flight-allowed:
+  # Worlds where AFly works. Empty = all worlds; otherwise only the listed worlds.
+  worlds: []
+  # Allow paid flight inside residences
+  inside-residence: true
+  # Allow paid flight outside residences (wilderness)
+  outside-residence: true
+
+# Keep players airborne when crossing region boundaries (residence <-> wilderness).
+#  true  = don't drop them at a boundary; keep flying and just show the new rate.
+#  false = they drop to the ground at boundaries; run /afly on to fly again.
+# Fall damage: system-caused drops (no-fly zone, out of money, region boundary)
+# are protected; a player who has flight on but chooses to fall without flying
+# still takes normal fall damage.
+keep-flying-across-regions: true

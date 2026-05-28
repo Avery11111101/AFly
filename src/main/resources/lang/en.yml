@@ -23,6 +23,9 @@ actionbar-other: "&6✈ Flying in \"{residence}\" (not yours) &7| rate &e{cost}&
 actionbar-wild: "&c✈ Flying in wilderness &7| rate &e{cost}&7/sec &8| &7bal &e{balance}"
 
 insufficient: "&4[AFly] &cInsufficient funds — flight disabled. Top up, then &f/afly on&c again."
+no-fly-here: "&cPaid flight isn't allowed here."
+flight-resumed: "&aBack in a fly-allowed area — flight re-enabled."
+dropped-hint: "&7You dropped out of flight. Run &f/afly on&7 to fly again."
 
 status-on: "&fYour paid flight: &aON"
 status-off: "&fYour paid flight: &cOFF"

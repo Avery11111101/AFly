@@ -41,16 +41,55 @@ public class ChargeTask extends BukkitRunnable {
 
             // 飛行結束偵測：剛剛還在收費飛行、現在停了 → 顯示明細
             if (plugin.wasFlying().contains(id) && !p.isFlying()) {
+                boolean midAir = !p.isOnGround();
                 plugin.endFlight(p);
+                // 半空中被放下、且不是玩家自願停飛 → 視為系統造成的墜落，免摔傷
+                if (midAir && !plugin.recentlyStoppedIntentionally(id)) {
+                    plugin.protectNextFall(id);
+                }
+                // 未開啟「跨界維持飛行」且是半空中掉下來 → 提示可重新飛
+                if (!plugin.keepFlyingAcrossRegions() && midAir && plugin.flyEnabled().contains(id)) {
+                    p.sendMessage(plugin.lang().component("dropped-hint"));
+                }
                 continue;
             }
 
-            if (!p.isFlying()) continue;
+            // 只處理收費模式（生存/冒險）；創造/旁觀的飛行能力一律不碰
             if (!plugin.chargedModes().contains(p.getGameMode())) continue;
+
+            // 地點許可：世界 + 領地內/外
+            boolean worldOk = plugin.worldAllowed(p.getWorld().getName());
+            Object res = worldOk ? plugin.residence().getResidence(p.getLocation()) : null;
+            boolean inResForAllow = res != null;
+            boolean allowedHere = worldOk && plugin.zoneAllowed(inResForAllow);
+
+            if (!allowedHere) {
+                // 此處不允許付費飛行 → 安全放下並收回飛行能力（提示去重；系統墜落免傷）
+                if (p.isFlying()) {
+                    p.setFlying(false);
+                    plugin.protectNextFall(id);
+                    plugin.endFlight(p);
+                }
+                p.setAllowFlight(false);
+                if (plugin.blockedFlight().add(id)) {
+                    p.sendMessage(plugin.lang().component("no-fly-here"));
+                }
+                continue;
+            }
+
+            // 剛從禁飛區回到可飛區 → 自動恢復飛行能力
+            if (plugin.blockedFlight().remove(id)) {
+                p.setAllowFlight(true);
+                p.sendMessage(plugin.lang().component("flight-resumed"));
+            }
+
+            // 允許飛行 → 確保有飛行能力（可雙擊起飛）
+            if (!p.getAllowFlight()) p.setAllowFlight(true);
+
+            if (!p.isFlying()) continue;
             if (p.hasPermission(AFly.BYPASS_PERM)) continue;
 
             // 判斷所在領地與計價區域
-            Object res = plugin.residence().getResidence(p.getLocation());
             String name = null;
             int zone;
             double cost;
@@ -100,6 +139,7 @@ public class ChargeTask extends BukkitRunnable {
                 sendActionBar(p, zone, name, cost);
             } else {
                 p.sendMessage(plugin.lang().component("insufficient"));
+                plugin.protectNextFall(id); // 沒錢被迫落地 → 系統造成，免摔傷
                 plugin.endFlight(p);
                 p.setFlying(false);
                 p.setAllowFlight(false);

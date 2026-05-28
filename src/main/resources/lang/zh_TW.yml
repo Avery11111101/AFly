@@ -23,6 +23,9 @@ actionbar-other: "&6✈ 飛行於「{residence}」（非你的領地）&7| 費�
 actionbar-wild: "&c✈ 荒野飛行中 &7| 費率 &e{cost}&7/秒 &8| &7餘額 &e{balance}"
 
 insufficient: "&4[AFly] &c餘額不足，已強制關閉飛行！請補充金錢後重新輸入 &f/afly on&c。"
+no-fly-here: "&c這個地方不允許付費飛行。"
+flight-resumed: "&a你回到可飛行區域了——已重新開啟飛行。"
+dropped-hint: "&7你已脫離飛行。輸入 &f/afly on&7 即可繼續飛行。"
 
 status-on: "&f你的付費飛行：&a已開啟"
 status-off: "&f你的付費飛行：&c未開啟"

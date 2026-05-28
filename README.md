@@ -26,6 +26,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 - 🔧 **Per-player preferences** (summary on/off, owner-alerts on/off) persist in `playerdata.yml`.
 - 🌍 **In-game language switching** via `/afly lang <language>`.
 - 🌐 **Multi-language** via `lang/*.yml` (ships with English & Traditional Chinese).
+- 🗺️ **Configurable flight zones** — restrict paid flight by world, and toggle it inside / outside residences.
 - 🛡️ **Bypass permission** (`fly.charge.bypass`) for staff who shouldn't be charged.
 - 💸 Out of money → **forced landing** and paid flight auto-disabled.
 
@@ -130,6 +131,17 @@ Everything lives under `/afly` (sub-commands tab-complete):
 
 ## 📝 Changelog
 
+### v1.4.1
+- **Smarter fall damage**: system-caused drops (no-fly zone, out of money, region boundary) no longer hurt the player, but a player who has flight on and *chooses* to fall without flying still takes normal fall damage.
+
+### v1.4.0
+- **Seamless cross-boundary flight** (`keep-flying-across-regions`, default on): crossing residence↔wilderness no longer drops you — you keep flying and just see the new rate. When off, you drop at boundaries with a hint to `/afly on` again.
+- Blocked in a no-fly zone? Flight **auto-resumes** when you return to an allowed area.
+
+### v1.3.2
+- **Configurable flight locations** (`flight-allowed` in `config.yml`): restrict paid flight by world list, and toggle it inside / outside residences. Flying into a disallowed spot drops the player safely with a notice.
+- Listed two authors.
+
 ### v1.3.1
 - Added the project GitHub link to `config.yml`.
 
@@ -157,4 +169,4 @@ Released under the [MIT License](LICENSE). © 2026 Avery11111101.
 
 ---
 
-*Author: avery11111102*
+*Authors: avery11111102 & Avery11111101*

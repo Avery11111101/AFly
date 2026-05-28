@@ -72,12 +72,20 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
         UUID id = p.getUniqueId();
         if (on) {
             plugin.flyEnabled().add(id);
-            p.setAllowFlight(true);
+            boolean allowed = plugin.flightAllowedAt(p);
+            p.setAllowFlight(allowed);
             p.sendMessage(plugin.lang().component("fly-enabled"));
+            if (allowed) {
+                plugin.blockedFlight().remove(id);
+            } else {
+                plugin.blockedFlight().add(id);
+                p.sendMessage(plugin.lang().component("no-fly-here"));
+            }
         } else {
             // 關閉前先結算明細
             plugin.endFlight(p);
             plugin.flyEnabled().remove(id);
+            plugin.blockedFlight().remove(id);
             p.setFlying(false);
             p.setAllowFlight(false);
             p.sendMessage(plugin.lang().component("fly-disabled"));

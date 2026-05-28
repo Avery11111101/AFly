@@ -46,6 +46,22 @@ public class AFly extends JavaPlugin {
     private boolean showBalance;
     private Set<GameMode> chargedModes = EnumSet.noneOf(GameMode.class);
 
+    // 允許飛行的地點
+    private final Set<String> allowedWorlds = new HashSet<>();
+    private boolean allowInsideResidence;
+    private boolean allowOutsideResidence;
+    private boolean keepFlyingAcrossRegions;
+
+    // 目前因「禁飛區」被擋下飛行的玩家（用於去重提示 + 回到可飛區自動恢復）
+    private final Set<UUID> blockedFlight = new HashSet<>();
+
+    // 摔落傷害保護：系統造成的墜落（被擋下/沒錢/邊界拉下）給予一次性免傷
+    private final Map<UUID, Long> fallProtectUntil = new HashMap<>();
+    // 玩家「自行」雙擊關閉飛行的時間戳（這種自願墜落不予保護）
+    private final Map<UUID, Long> lastIntentionalStop = new HashMap<>();
+    private static final long FALL_PROTECT_MS = 6000L;
+    private static final long INTENTIONAL_STOP_MS = 1500L;
+
     // 執行期狀態
     private final Set<UUID> flyEnabled = new HashSet<>();
     private final Set<UUID> wasFlying = new HashSet<>();
@@ -89,6 +105,8 @@ public class AFly extends JavaPlugin {
         getCommand("afly").setExecutor(cmd);
         getCommand("afly").setTabCompleter(cmd);
 
+        getServer().getPluginManager().registerEvents(new FlightListener(this), this);
+
         getLogger().info("AFly 已啟用。");
     }
 
@@ -101,6 +119,9 @@ public class AFly extends JavaPlugin {
         lastZone.clear();
         flightStart.clear();
         flightSpent.clear();
+        blockedFlight.clear();
+        fallProtectUntil.clear();
+        lastIntentionalStop.clear();
     }
 
     /** 重新讀取設定與語言檔，並重啟扣款排程。 */
@@ -113,6 +134,12 @@ public class AFly extends JavaPlugin {
         costRes = c.getDouble("cost.residence", 1.0);
         notifyOwner = c.getBoolean("notify-owner", true);
         showBalance = c.getBoolean("actionbar-show-balance", true);
+
+        allowedWorlds.clear();
+        allowedWorlds.addAll(c.getStringList("flight-allowed.worlds"));
+        allowInsideResidence = c.getBoolean("flight-allowed.inside-residence", true);
+        allowOutsideResidence = c.getBoolean("flight-allowed.outside-residence", true);
+        keepFlyingAcrossRegions = c.getBoolean("keep-flying-across-regions", true);
 
         chargedModes = EnumSet.noneOf(GameMode.class);
         for (String s : c.getStringList("charged-gamemodes")) {
@@ -148,7 +175,9 @@ public class AFly extends JavaPlugin {
             String current = marker.exists()
                     ? new String(Files.readAllBytes(marker.toPath()), StandardCharsets.UTF_8).trim()
                     : null;
-            if (language.equals(current)) return; // 已是此語言，無需重寫
+            // 語言沒變、且設定檔已含最新鍵 → 不需重寫；缺新鍵時也重生以補上預設
+            boolean missingKeys = !getConfig().contains("flight-allowed");
+            if (language.equals(current) && !missingKeys) return;
 
             String resource = language.equalsIgnoreCase("en") ? "config.yml" : "config_" + language + ".yml";
             InputStream in = getResource(resource);
@@ -241,6 +270,54 @@ public class AFly extends JavaPlugin {
         getConfig().set("language", language);
         saveConfig();
         reloadAll();
+    }
+
+    // ---- 允許飛行的地點 ----
+
+    public boolean keepFlyingAcrossRegions() {
+        return keepFlyingAcrossRegions;
+    }
+
+    public Set<UUID> blockedFlight() {
+        return blockedFlight;
+    }
+
+    // ---- 摔落傷害保護 ----
+
+    /** 標記：此玩家接下來的墜落屬「系統造成」，給予一次性免傷。 */
+    public void protectNextFall(UUID id) {
+        fallProtectUntil.put(id, System.currentTimeMillis() + FALL_PROTECT_MS);
+    }
+
+    /** 消耗一次摔落保護（仍在時效內回傳 true）。 */
+    public boolean consumeFallProtection(UUID id) {
+        Long until = fallProtectUntil.remove(id);
+        return until != null && until >= System.currentTimeMillis();
+    }
+
+    /** 記錄玩家自行雙擊關閉飛行（自願停飛，不予摔落保護）。 */
+    public void markIntentionalStop(UUID id) {
+        lastIntentionalStop.put(id, System.currentTimeMillis());
+    }
+
+    public boolean recentlyStoppedIntentionally(UUID id) {
+        Long t = lastIntentionalStop.get(id);
+        return t != null && (System.currentTimeMillis() - t) <= INTENTIONAL_STOP_MS;
+    }
+
+    public boolean worldAllowed(String worldName) {
+        return allowedWorlds.isEmpty() || allowedWorlds.contains(worldName);
+    }
+
+    public boolean zoneAllowed(boolean insideResidence) {
+        return insideResidence ? allowInsideResidence : allowOutsideResidence;
+    }
+
+    /** 該玩家當前位置是否允許付費飛行（世界 + 領地內/外）。 */
+    public boolean flightAllowedAt(Player p) {
+        if (!worldAllowed(p.getWorld().getName())) return false;
+        boolean inRes = residence.getResidence(p.getLocation()) != null;
+        return zoneAllowed(inRes);
     }
 
     /** 可用語言清單：內建 en/zh_TW + 玩家自行新增於 lang/ 的 *.yml。 */
