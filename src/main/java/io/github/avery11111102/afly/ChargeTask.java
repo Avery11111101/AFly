@@ -28,7 +28,11 @@ public class ChargeTask extends BukkitRunnable {
         this.plugin = plugin;
     }
 
+    // isOnGround() 在 Paper 26.1 標記廢棄（取自客戶端、可被偽造）。
+    // 本插件用它判斷「飛行被放下時是否還在半空」以決定是否套用一次性摔落保護；
+    // 此情境下客戶端視角正是我們需要的，故抑制廢棄警告。
     @Override
+    @SuppressWarnings("deprecation")
     public void run() {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             UUID id = p.getUniqueId();
@@ -99,8 +103,15 @@ public class ChargeTask extends BukkitRunnable {
             } else {
                 name = plugin.residence().nameOf(res);
                 if (name == null || name.isEmpty()) name = "?";
-                String owner = plugin.residence().ownerOf(res);
-                boolean own = owner != null && owner.equalsIgnoreCase(p.getName());
+                // 優先以 UUID 比對（玩家改名後仍正確）；新版 Residence 不支援時退回名稱比對
+                java.util.UUID ownerUUID = plugin.residence().ownerUUIDOf(res);
+                boolean own;
+                if (ownerUUID != null) {
+                    own = ownerUUID.equals(p.getUniqueId());
+                } else {
+                    String owner = plugin.residence().ownerOf(res);
+                    own = owner != null && owner.equalsIgnoreCase(p.getName());
+                }
                 if (own) {
                     zone = ZONE_OWN;
                     cost = plugin.costRes();
@@ -181,10 +192,18 @@ public class ChargeTask extends BukkitRunnable {
     /** 通知地主（自帶守門：伺服器主開關 + 地主個人開關 + 不通知自己）。 */
     private void notifyOwner(Player flyer, Object res, String name) {
         if (!plugin.notifyOwner()) return;
-        String owner = plugin.residence().ownerOf(res);
-        if (owner == null || owner.isEmpty()) return;
-        if (owner.equalsIgnoreCase(flyer.getName())) return;
-        Player ownerP = plugin.getServer().getPlayerExact(owner);
+        // 優先用 UUID 找線上地主（getPlayerExact 在新版會因玩家改名失效）
+        Player ownerP = null;
+        java.util.UUID ownerUUID = plugin.residence().ownerUUIDOf(res);
+        if (ownerUUID != null) {
+            if (ownerUUID.equals(flyer.getUniqueId())) return;
+            ownerP = plugin.getServer().getPlayer(ownerUUID);
+        } else {
+            String owner = plugin.residence().ownerOf(res);
+            if (owner == null || owner.isEmpty()) return;
+            if (owner.equalsIgnoreCase(flyer.getName())) return;
+            ownerP = plugin.getServer().getPlayerExact(owner);
+        }
         if (ownerP == null) return;
         if (!plugin.playerData().ownerNotify(ownerP.getUniqueId())) return;
         Map<String, String> ph = new HashMap<>();

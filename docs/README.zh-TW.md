@@ -4,6 +4,9 @@
 
 📥 **前往 [Modrinth](https://modrinth.com/plugin/afly) 下載**
 
+> ✅ **目前支援的 Minecraft 版本：26.1.2 · 26.2**（Paper，伺服器需 Java 25）
+> 編譯依據 `paper-api 26.1.2.build.72-stable`；亦相容 Paper 26.2（alpha）與其分支（Purpur 等）。
+
 > 一個輕量的 **Paper 插件**：玩家飛行時依所在位置每秒扣款，[Residence](https://github.com/Zrips/Residence) 領地內外費率不同。名稱取自指令 `/afly`。
 
 玩家用 `/afly on` 開啟「付費飛行」後，雙擊空白鍵起飛即**每秒**依所在位置自動扣款。在**自己的領地**內收便宜的費率（預設 `1`/秒）；飛到**別人的領地或荒野**則收較高費率（預設 `5`/秒）；餘額不足時自動落地。
@@ -36,7 +39,7 @@
 
 | 類型 | 名稱 | 備註 |
 | --- | --- | --- |
-| 伺服器核心 | **Paper 1.21+** | 或其分支（Purpur 等） |
+| 伺服器核心 | **Paper 26.1.2+**（亦支援 26.2） | 或其分支（Purpur 等），需 Java 25 執行環境 |
 | 插件 | **Vault** | 經濟系統橋接 |
 | 插件 | 任一經濟插件（EssentialsX / CMI…） | 提供金錢來源 |
 | 插件 | **Residence** | 領地外掛 |
@@ -47,7 +50,7 @@
 
 ### 方式 A — 使用發佈的 JAR（建議）
 
-1. **準備伺服器。** 執行 **Paper 1.21+**，將必要插件放入 `plugins/`：
+1. **準備伺服器。** 執行 **Paper 26.1.2+**（或 26.2），將必要插件放入 `plugins/`：
    - [Vault](https://github.com/MilkBowl/Vault/releases)
    - 一個經濟插件，例如 [EssentialsX](https://essentialsx.net/downloads.html)
    - [Residence](https://github.com/Zrips/Residence/releases)
@@ -59,7 +62,7 @@
 
 ### 方式 B — 從原始碼自行編譯
 
-需要 **JDK 21+** 與 **Maven**。
+需要 **JDK 21+** 與 **Maven**（伺服器執行 Paper 26.1+ 需 Java 25）。
 
 ```bash
 git clone https://github.com/Avery11111101/AFly.git
@@ -130,6 +133,12 @@ actionbar-show-balance: true
 ---
 
 ## 📝 更新日誌
+
+### v1.5.0
+- **支援 MC 26.1.2 / 26.2**：paper-api 升至 `26.1.2.build.72-stable`，`api-version` 改為 `26.1`。
+- 偵測到 Residence 新版時改用 `getOwnerUUID()` 比對擁有者（玩家改名後仍正確），舊版自動退回名稱比對。
+- 通知地主改用 `Server#getPlayer(UUID)`，不再依賴可能失效的玩家名稱。
+- 玩家離線時完整清理本插件記憶體中的飛行暫存狀態。
 
 ### v1.4.1
 - **更聰明的摔落傷害**：系統造成的墜落（禁飛區、沒錢、領地邊界）不再扣血；但若玩家開著飛行卻「自願往下跳、沒起飛」，仍照常受到摔落傷害。

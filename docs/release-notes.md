@@ -1,6 +1,8 @@
 # AFly — Release Notes (after v1.3.1)
 
-涵蓋 v1.3.2、v1.4.0、v1.4.1。每個版本附「英文 / 繁中」更新內容，以及可直接貼到 GitHub Releases 的發佈文案。
+涵蓋 v1.3.2、v1.4.0、v1.4.1、v1.5.0。每個版本附「英文 / 繁中」更新內容，以及可直接貼到 GitHub Releases 的發佈文案。
+
+**目前支援的 Minecraft 版本：26.1.2 · 26.2**（Paper，Java 25）
 
 ---
 
@@ -30,6 +32,19 @@
 
 **繁體中文**
 - 更聰明的摔落傷害：系統造成的墜落（禁飛區、沒錢、領地邊界）不再扣血；但若玩家開著飛行卻「自願往下跳、沒起飛」，仍照常受到摔落傷害。
+
+### v1.5.0
+**English**
+- Minecraft 26.1.2 / 26.2 support: upgraded paper-api to `26.1.2.build.72-stable`, `api-version` is now `26.1`.
+- When Residence exposes `getOwnerUUID()`, owner comparisons use UUID (still correct after a player renames); older Residence builds fall back to name comparison.
+- Owner notifications resolve the recipient via `Server#getPlayer(UUID)` instead of the renaming-fragile `getPlayerExact`.
+- Player flight session state is fully cleaned up on quit.
+
+**繁體中文**
+- 支援 MC 26.1.2 / 26.2：paper-api 升至 `26.1.2.build.72-stable`，`api-version` 改為 `26.1`。
+- 偵測到 Residence 新版時改用 `getOwnerUUID()` 比對擁有者（玩家改名後仍正確），舊版自動退回名稱比對。
+- 通知地主改用 `Server#getPlayer(UUID)`，不再依賴可能失效的玩家名稱查找。
+- 玩家離線時完整清理本插件記憶體中的飛行暫存狀態。
 
 ---
 
@@ -78,4 +93,25 @@
 - **更聰明的摔落傷害**：系統造成的墜落（禁飛區、沒錢、領地邊界）不再扣血；但若玩家開著飛行卻「自願往下跳、沒起飛」，仍照常受到摔落傷害。
 
 **Download:** AFly-1.4.1.jar
+```
+
+### Release: v1.5.0
+**Tag:** `v1.5.0`　**Title:** `v1.5.0 — MC 26.1.2 / 26.2 support / 支援 MC 26.1.2 / 26.2`
+
+```markdown
+**Supported Minecraft versions:** 26.1.2 · 26.2 (Paper, Java 25)
+
+### 🇬🇧 English
+- **MC 26.1.2 / 26.2 support**: upgraded paper-api to `26.1.2.build.72-stable`; `api-version` is now `26.1`.
+- Uses Residence `getOwnerUUID()` when available so owner comparisons stay correct after player renames; falls back to name comparison on older Residence builds.
+- Owner notifications resolve the recipient via `Server#getPlayer(UUID)` instead of `getPlayerExact`.
+- Player flight session state is fully cleaned up on quit.
+
+### 🇹🇼 繁體中文
+- **支援 MC 26.1.2 / 26.2**：paper-api 升至 `26.1.2.build.72-stable`，`api-version` 改為 `26.1`。
+- 偵測到 Residence 新版時改用 `getOwnerUUID()` 比對擁有者（玩家改名後仍正確），舊版自動退回名稱比對。
+- 通知地主改用 `Server#getPlayer(UUID)`，不再依賴可能失效的玩家名稱查找。
+- 玩家離線時完整清理本插件記憶體中的飛行暫存狀態。
+
+**Download:** AFly-1.5.0.jar
 ```

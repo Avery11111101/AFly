@@ -30,10 +30,12 @@ public class FlightListener implements Listener {
         this.plugin = plugin;
     }
 
+    // isOnGround() 在 26.1 後標記廢棄；本檔僅用於「跨界搶回飛行」時判斷玩家是否在半空（避免地面誤觸發 setFlying），
+    // 客戶端視角即可接受，故抑制警告。
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @SuppressWarnings("deprecation")
     public void onMove(PlayerMoveEvent event) {
-        if (event.getTo() == null) return;
-        // 只在「跨越方塊」時處理，降低開銷
+        // 只在「跨越方塊」時處理，降低開銷（26.x 起 getTo() 已 @NotNull）
         if (event.getFrom().getBlockX() == event.getTo().getBlockX()
                 && event.getFrom().getBlockY() == event.getTo().getBlockY()
                 && event.getFrom().getBlockZ() == event.getTo().getBlockZ()) {
@@ -78,7 +80,11 @@ public class FlightListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        plugin.blockedFlight().remove(event.getPlayer().getUniqueId());
+        UUID id = event.getPlayer().getUniqueId();
+        // 玩家離線：清掉所有暫存狀態，避免 UUID 殘留在記憶體 Map 裡
+        plugin.blockedFlight().remove(id);
+        plugin.flyEnabled().remove(id);
+        plugin.clearSession(id);
     }
 
     /** 玩家「自行」雙擊關閉飛行 → 記錄為自願停飛，後續墜落不予保護。 */

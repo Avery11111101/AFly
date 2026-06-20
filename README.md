@@ -4,6 +4,9 @@
 
 📥 **Download on [Modrinth](https://modrinth.com/plugin/afly)**
 
+> ✅ **Supported Minecraft versions: 26.1.2 · 26.2** (Paper, Java 25 runtime)
+> Built against `paper-api 26.1.2.build.72-stable`; works on Paper 26.2 (alpha) and forks (Purpur etc.).
+
 > A lightweight **Paper plugin** that charges players money per second while flying, with different rates inside vs. outside [Residence](https://github.com/Zrips/Residence) regions. Named after its command, `/afly`.
 
 Players run `/afly on` to enable paid flight; once they double-tap space to take off, money is deducted **every second** based on where they are. Flying inside **your own Residence** is cheap (default `1`/sec); flying over **someone else's land or the open wilderness** costs more (default `5`/sec). When a player runs out of money they are dropped out of flight automatically.
@@ -36,7 +39,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 
 | Type | Name | Notes |
 | --- | --- | --- |
-| Server | **Paper 1.21+** | or a fork (Purpur, etc.) |
+| Server | **Paper 26.1.2+** (also runs on 26.2) | or a fork (Purpur, etc.) — Java 25 runtime |
 | Plugin | **Vault** | economy bridge |
 | Plugin | An economy plugin (EssentialsX, CMI, …) | provides the actual money |
 | Plugin | **Residence** | land-claim plugin |
@@ -47,7 +50,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 
 ### Option A — Use the released JAR (recommended)
 
-1. **Prepare the server.** Run **Paper 1.21+**. Install the required plugins into `plugins/`:
+1. **Prepare the server.** Run **Paper 26.1.2+** (or 26.2). Install the required plugins into `plugins/`:
    - [Vault](https://github.com/MilkBowl/Vault/releases)
    - An economy plugin, e.g. [EssentialsX](https://essentialsx.net/downloads.html) (`EssentialsX.jar` + `EssentialsXSpawn` optional)
    - [Residence](https://github.com/Zrips/Residence/releases)
@@ -59,7 +62,7 @@ Players run `/afly on` to enable paid flight; once they double-tap space to take
 
 ### Option B — Build from source
 
-Requires **JDK 21+** and **Maven**.
+Requires **JDK 21+** and **Maven** (server runtime needs Java 25 for Paper 26.1+).
 
 ```bash
 git clone https://github.com/Avery11111101/AFly.git
@@ -130,6 +133,12 @@ Everything lives under `/afly` (sub-commands tab-complete):
 ---
 
 ## 📝 Changelog
+
+### v1.5.0
+- **MC 26.1.2 / 26.2 support**: upgraded Paper API to `26.1.2.build.72-stable`, `api-version` bumped to `26.1`.
+- Now picks up Residence's `getOwnerUUID()` when available (correct after player name changes); falls back to name comparison for older Residence builds.
+- Owner notifications resolve the recipient by UUID via `Server#getPlayer(UUID)`.
+- Player session state is now fully cleaned up on quit.
 
 ### v1.4.1
 - **Smarter fall damage**: system-caused drops (no-fly zone, out of money, region boundary) no longer hurt the player, but a player who has flight on and *chooses* to fall without flying still takes normal fall damage.

@@ -64,7 +64,7 @@ A clean `config.yml` (rates, billing interval, charged game modes, owner-notify 
 
 ## Requirements
 
-- **Paper 1.21+**
+- **Paper 26.1.2 / 26.2** (Java 25 runtime)
 - **Vault** + any economy plugin (EssentialsX, CMI, …)
 - **Residence**
 
@@ -130,6 +130,6 @@ A clean `config.yml` (rates, billing interval, charged game modes, owner-notify 
 
 ## 需求
 
-- **Paper 1.21+**
+- **Paper 26.1.2 / 26.2**（需 Java 25 執行環境）
 - **Vault** + 任一經濟插件（EssentialsX、CMI…）
 - **Residence**

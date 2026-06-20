@@ -1,7 +1,7 @@
 name: AFly
 version: ${project.version}
 main: io.github.avery11111102.afly.AFly
-api-version: '1.21'
+api-version: '26.1'
 authors: [avery11111102, Avery11111101]
 description: Residence-based pay-to-fly. Charges players per second while flying, with different rates inside/outside Residence regions.
 depend: [Vault, Residence]
@@ -9,7 +9,7 @@ depend: [Vault, Residence]
 commands:
   afly:
     description: AFly paid-flight controls
-    usage: /afly <on|off|info|help|reload>
+    usage: /afly <on|off|info|help|summary|notify|reload|lang>
 
 permissions:
   fly.charge.bypass:
