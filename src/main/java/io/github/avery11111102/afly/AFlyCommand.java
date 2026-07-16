@@ -38,6 +38,14 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
             case "off" -> toggle(sender, false);
             case "summary" -> prefSummary(sender, args);
             case "notify" -> prefNotify(sender, args);
+            case "check" -> {
+                if (notAdmin(sender)) break;
+                checkPlayers(sender, args);
+            }
+            case "adminnotify" -> {
+                if (notAdmin(sender)) break;
+                prefAdminNotify(sender, args);
+            }
             case "reload" -> {
                 if (notAdmin(sender)) break;
                 plugin.reloadAll();
@@ -81,6 +89,7 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
                 plugin.blockedFlight().add(id);
                 p.sendMessage(plugin.lang().component("no-fly-here"));
             }
+            notifyAdminsToggle(p, true);
         } else {
             // 關閉前先結算明細
             plugin.endFlight(p);
@@ -89,7 +98,50 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
             p.setFlying(false);
             p.setAllowFlight(false);
             p.sendMessage(plugin.lang().component("fly-disabled"));
+            notifyAdminsToggle(p, false);
         }
+    }
+
+    private void notifyAdminsToggle(Player p, boolean on) {
+        Component msg = plugin.lang().component(on ? "admin-notify-msg-on" : "admin-notify-msg-off", Map.of("player", p.getName()));
+        for (Player admin : plugin.getServer().getOnlinePlayers()) {
+            if (admin.hasPermission(AFly.ADMIN_PERM) && plugin.playerData().adminNotify(admin.getUniqueId())) {
+                admin.sendMessage(msg);
+            }
+        }
+    }
+
+    private void checkPlayers(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            List<String> flyingPlayers = new ArrayList<>();
+            for (UUID id : plugin.flyEnabled()) {
+                Player p = plugin.getServer().getPlayer(id);
+                if (p != null) flyingPlayers.add(p.getName());
+            }
+            if (flyingPlayers.isEmpty()) {
+                sender.sendMessage(plugin.lang().component("check-none"));
+            } else {
+                sender.sendMessage(plugin.lang().component("check-list", Map.of("players", String.join(", ", flyingPlayers))));
+            }
+        } else {
+            Player target = plugin.getServer().getPlayer(args[1]);
+            if (target == null) {
+                sender.sendMessage(plugin.lang().component("check-offline"));
+                return;
+            }
+            boolean isFlying = plugin.flyEnabled().contains(target.getUniqueId());
+            sender.sendMessage(plugin.lang().component(isFlying ? "check-player-on" : "check-player-off", Map.of("player", target.getName())));
+        }
+    }
+
+    private void prefAdminNotify(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player p)) {
+            sender.sendMessage(plugin.lang().component("players-only"));
+            return;
+        }
+        boolean value = resolveToggle(args, plugin.playerData().adminNotify(p.getUniqueId()));
+        plugin.playerData().setAdminNotify(p.getUniqueId(), value);
+        p.sendMessage(plugin.lang().component(value ? "admin-notify-on" : "admin-notify-off"));
     }
 
     private void prefSummary(CommandSender sender, String[] args) {
@@ -150,6 +202,8 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> opts = new ArrayList<>(Arrays.asList("on", "off", "info", "help", "summary", "notify"));
             if (sender.hasPermission(AFly.ADMIN_PERM)) {
+                opts.add("check");
+                opts.add("adminnotify");
                 opts.add("reload");
                 opts.add("lang");
             }
@@ -157,8 +211,11 @@ public class AFlyCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2) {
             String first = args[0].toLowerCase(Locale.ROOT);
-            if (first.equals("summary") || first.equals("notify")) {
+            if (first.equals("summary") || first.equals("notify") || first.equals("adminnotify")) {
                 return filter(Arrays.asList("on", "off"), args[1]);
+            }
+            if (first.equals("check") && sender.hasPermission(AFly.ADMIN_PERM)) {
+                return null; // Return null to autocomplete online player names
             }
             if (first.equals("lang") && sender.hasPermission(AFly.ADMIN_PERM)) {
                 return filter(plugin.availableLanguages(), args[1]);

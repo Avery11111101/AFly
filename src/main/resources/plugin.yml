@@ -9,7 +9,7 @@ depend: [Vault, Residence]
 commands:
   afly:
     description: AFly paid-flight controls
-    usage: /afly <on|off|info|help|summary|notify|reload|lang>
+    usage: /afly <on|off|info|help|summary|notify|check|adminnotify|reload|lang>
 
 permissions:
   fly.charge.bypass:

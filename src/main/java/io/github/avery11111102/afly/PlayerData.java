@@ -11,6 +11,7 @@ import java.util.UUID;
  * 每位玩家獨立、可持久化的偏好設定（plugins/AFly/playerdata.yml）。
  *   <uuid>.summary       : 飛行結束是否顯示明細（預設 true）
  *   <uuid>.owner-notify  : 身為地主是否接收「有人在你領地飛行」通知（預設 true）
+ *   <uuid>.admin-notify  : 管理員是否接收玩家切換飛行模式通知（預設 false）
  */
 public class PlayerData {
 
@@ -58,6 +59,15 @@ public class PlayerData {
 
     public void setOwnerNotify(UUID id, boolean value) {
         data.set(id + ".owner-notify", value);
+        save();
+    }
+
+    public boolean adminNotify(UUID id) {
+        return data.getBoolean(id + ".admin-notify", false);
+    }
+
+    public void setAdminNotify(UUID id, boolean value) {
+        data.set(id + ".admin-notify", value);
         save();
     }
 }

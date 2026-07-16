@@ -134,6 +134,9 @@ Everything lives under `/afly` (sub-commands tab-complete):
 
 ## 📝 Changelog
 
+### v1.5.1
+- **Admin commands**: Added `/afly check [player]` to view who is currently flying, and `/afly adminnotify on|off` to toggle receiving alerts when players toggle their flight mode.
+
 ### v1.5.0
 - **MC 26.1.2 / 26.2 support**: upgraded Paper API to `26.1.2.build.72-stable`, `api-version` bumped to `26.1`.
 - Now picks up Residence's `getOwnerUUID()` when available (correct after player name changes); falls back to name comparison for older Residence builds.

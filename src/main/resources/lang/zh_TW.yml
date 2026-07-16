@@ -47,6 +47,18 @@ notify-off: "&c你將不再收到他人在你領地飛行的通知。"
 lang-changed: "&a伺服器語言已設為 &e{lang}&a 並重新載入。"
 lang-usage: "&c用法：&f/afly lang <語言>&c。可用：&f{langs}"
 
+# 管理員指令相關
+check-none: "&c目前沒有玩家正在使用飛行。"
+check-list: "&f目前使用飛行的玩家：&a{players}"
+check-offline: "&c找不到該玩家或玩家不在線上。"
+check-player-on: "&f玩家 &e{player} &f目前 &a正在 &f使用飛行。"
+check-player-off: "&f玩家 &e{player} &f目前 &c沒有 &f使用飛行。"
+
+admin-notify-on: "&a已開啟玩家飛行切換通知（管理員）。"
+admin-notify-off: "&c已關閉玩家飛行切換通知（管理員）。"
+admin-notify-msg-on: "&b[AFly-Admin] &f玩家 &e{player} &f已 &a開啟 &f飛行。"
+admin-notify-msg-off: "&b[AFly-Admin] &f玩家 &e{player} &f已 &c關閉 &f飛行。"
+
 info:
   - "&b===== AFly 費率 ====="
   - "&f領地內費率：&a{cost_res}&f/秒"
@@ -60,6 +72,8 @@ help:
   - "  &7/afly info &8- &f查看費率與自己的狀態"
   - "  &7/afly summary on|off &8- &f開關你的飛行明細"
   - "  &7/afly notify on|off &8- &f開關「他人在你領地飛行」的通知"
+  - "  &7/afly check [玩家] &8- &f查詢玩家飛行狀態 &8(管理員)"
+  - "  &7/afly adminnotify on|off &8- &f開關玩家飛行切換通知 &8(管理員)"
   - "  &7/afly lang <語言> &8- &f設定伺服器語言 &8(管理員)"
   - "  &7/afly reload &8- &f重新載入設定與語言 &8(管理員)"
   - "  &7/afly help &8- &f顯示本說明"

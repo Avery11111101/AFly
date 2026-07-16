@@ -47,6 +47,18 @@ notify-off: "&cYou'll no longer be alerted about flights in your residences."
 lang-changed: "&aServer language set to &e{lang}&a and reloaded."
 lang-usage: "&cUsage: &f/afly lang <language>&c. Available: &f{langs}"
 
+# Admin commands
+check-none: "&cNo players are currently flying."
+check-list: "&fCurrently flying players: &a{players}"
+check-offline: "&cPlayer not found or offline."
+check-player-on: "&fPlayer &e{player} &fis &acurrently &fflying."
+check-player-off: "&fPlayer &e{player} &fis &ccurrently not &fflying."
+
+admin-notify-on: "&aAdmin notifications for player flight toggles enabled."
+admin-notify-off: "&cAdmin notifications for player flight toggles disabled."
+admin-notify-msg-on: "&b[AFly-Admin] &fPlayer &e{player} &fhas &aenabled &fflight."
+admin-notify-msg-off: "&b[AFly-Admin] &fPlayer &e{player} &fhas &cdisabled &fflight."
+
 info:
   - "&b===== AFly ====="
   - "&fResidence rate: &a{cost_res}&f/sec"
@@ -60,6 +72,8 @@ help:
   - "  &7/afly info &8- &fShow rates and your status"
   - "  &7/afly summary on|off &8- &fToggle your flight summary"
   - "  &7/afly notify on|off &8- &fToggle alerts for flights in your land"
+  - "  &7/afly check [player] &8- &fCheck player flight status &8(admin)"
+  - "  &7/afly adminnotify on|off &8- &fToggle flight toggle alerts &8(admin)"
   - "  &7/afly lang <language> &8- &fSet server language &8(admin)"
   - "  &7/afly reload &8- &fReload config & language &8(admin)"
   - "  &7/afly help &8- &fShow this help"

@@ -134,6 +134,9 @@ actionbar-show-balance: true
 
 ## 📝 更新日誌
 
+### v1.5.1
+- **管理員指令**：新增 `/afly check [玩家]` 指令供查詢目前正在飛行的玩家；新增 `/afly adminnotify on|off` 讓管理員可以切換是否接收玩家更改飛行模式的即時通知。
+
 ### v1.5.0
 - **支援 MC 26.1.2 / 26.2**：paper-api 升至 `26.1.2.build.72-stable`，`api-version` 改為 `26.1`。
 - 偵測到 Residence 新版時改用 `getOwnerUUID()` 比對擁有者（玩家改名後仍正確），舊版自動退回名稱比對。
